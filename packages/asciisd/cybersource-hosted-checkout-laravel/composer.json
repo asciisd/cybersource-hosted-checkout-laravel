@@ -1,0 +1,39 @@
+{
+    "name": "asciisd/cybersource-hosted-checkout-laravel",
+    "description": "A Laravel package for integrating with Cybersource Secure Acceptance Hosted Checkout.",
+    "type": "laravel-package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Your Name",
+            "email": "your@email.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Asciisd\\Cybersource\\": "src/",
+            "Asciisd\\Cybersource\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Asciisd\\Cybersource\\CybersourceServiceProvider"
+            ],
+            "aliases": {
+                "Cybersource": "Asciisd\\Cybersource\\Facades\\Cybersource"
+            }
+        },
+        "branch-alias": {
+            "dev-main": "1.0-dev"
+        }
+    }
+} 
