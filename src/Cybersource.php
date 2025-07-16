@@ -19,7 +19,7 @@ class Cybersource
         $params['transaction_type'] = 'authorization, create_payment_token';
         $params['reference_number'] = $params['transaction_uuid'];
 
-        $params['signed_field_names'] = 'partner_solution_id,access_key,profile_id,transaction_uuid,signed_field_names,unsigned_field_names,signed_date_time,locale,transaction_type,reference_number,amount,currency';
+        $params['signed_field_names'] = 'access_key,profile_id,transaction_uuid,signed_field_names,unsigned_field_names,signed_date_time,locale,transaction_type,reference_number,amount,currency';
 
         $signature = $this->sign($params);
 
