@@ -24,6 +24,44 @@ CYBERSOURCE_ACCESS_KEY=
 CYBERSOURCE_SECRET_KEY=
 ```
 
+You can also publish the views and customize them:
+
+```bash
+php artisan vendor:publish --provider="Asciisd\Cybersource\CybersourceServiceProvider" --tag="cybersource-views"
+```
+
+### Vue Component
+
+This package also includes a Vue component. To use it, first register the component in your `resources/js/app.js` file:
+
+```javascript
+import { createApp } from 'vue';
+import CyberSourceCheckout from './vendor/asciisd/cybersource/js/components/CyberSourceCheckout.vue';
+
+const app = createApp({});
+
+app.component('CyberSourceCheckout', CyberSourceCheckout);
+
+app.mount('#app');
+```
+
+You will need to publish the assets to have the component available in your `resources` folder:
+
+```bash
+php artisan vendor:publish --provider="Asciisd\Cybersource\CybersourceServiceProvider" --tag="cybersource-assets"
+```
+
+Then, you can use the `<x-cybersource-checkout-vue>` component in your Blade views:
+
+```blade
+<x-cybersource-checkout-vue
+    :amount="100.00"
+    currency="USD"
+/>
+```
+
+The component accepts the same properties as the Blade component.
+
 ## Usage
 
 This package provides a Blade component to easily render the payment form.

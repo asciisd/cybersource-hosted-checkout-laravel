@@ -1,0 +1,12 @@
+/vendor/
+/node_modules/
+.env
+/public/build
+/storage/*.key
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/framework/cache/*
+/storage/logs/*.log
+npm-debug.log
+yarn-error.log
+LOCAL_DEVELOPMENT.md 
