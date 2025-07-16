@@ -13,16 +13,16 @@ class CybersourceServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../../config/cybersource.php' => config_path('cybersource.php'),
+            __DIR__.'/../config/cybersource.php' => config_path('cybersource.php'),
         ], 'cybersource-config');
 
         $this->publishes([
-            __DIR__.'/../../resources/js' => resource_path('js/vendor/asciisd/cybersource'),
+            __DIR__.'/../resources/js' => resource_path('js/vendor/asciisd/cybersource'),
         ], 'cybersource-assets');
 
-        $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
-        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'cybersource');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'cybersource');
 
         Blade::component('cybersource::components.checkout', 'cybersource-checkout');
         Blade::component('cybersource::components.checkout-vue', 'cybersource-checkout-vue');
