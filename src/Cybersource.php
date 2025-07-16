@@ -28,21 +28,44 @@ class Cybersource
         return $params;
     }
 
+    /*
+     * To Get Signature
+     * 
+     * @param  array  $params
+     * @return string
+     */
     private function sign(array $params): string
     {
-        $signedFieldNames = explode(',', $params['signed_field_names']);
-        $dataToSign = [];
+        return $this->signData($this->buildDataToSign($params), Config::get('cybersource.secret_key'));
+    }
+
+    /*
+     * To Get Signature
+     * 
+     * @param  string  $data
+     * @param  string  $secretKey
+     * @return string
+     */
+    public function signData($data, $secretKey) 
+    {
+        return base64_encode(hash_hmac('sha256', $data, $secretKey, true));
+    }
+
+    /*
+     * To Prepare Data for Signature
+     * 
+     * @param  array  $params
+     * @return string
+     */
+    public function buildDataToSign($params) 
+    {
+        $signedFieldNames = explode(",", $params["signed_field_names"]);
 
         foreach ($signedFieldNames as $field) {
-            if (isset($params[$field])) {
-                $dataToSign[] = $field . '=' . $params[$field];
-            }
+            $dataToSign[] = $field."=".$params[$field];
         }
 
-        $dataToSign = implode(',', $dataToSign);
-
-        $secretKey = Config::get('cybersource.secret_key');
-        return base64_encode(hash_hmac('sha256', $dataToSign, $secretKey, true));
+        return implode(",", $dataToSign);
     }
 
     public function verifySignature(array $payload): bool
