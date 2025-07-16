@@ -2,43 +2,37 @@
 
 namespace Asciisd\Cybersource\Http\Controllers;
 
-use Asciisd\Cybersource\Events\NotificationReceived;
-use Asciisd\Cybersource\Events\TransactionApproved;
-use Asciisd\Cybersource\Events\TransactionDeclined;
-use Asciisd\Cybersource\Facades\Cybersource;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Log;
+use Asciisd\Cybersource\Facades\Cybersource;
+use Asciisd\Cybersource\Events\CybersourceHostedCheckoutApproved;
+use Asciisd\Cybersource\Events\CybersourceHostedCheckoutDeclined;
+use Asciisd\Cybersource\Events\CybersourceHostedCheckoutNotificationReceived;
 
-class CybersourceController extends Controller
+class CybersourceController
 {
     public function handleResponse(Request $request)
     {
-        if (!Cybersource::verifySignature($request->all())) {
-            Log::error('Cybersource response signature verification failed.', $request->all());
-            return response('Invalid signature.', 400);
+        if (!Cybersource::validateSignature($request->all())) {
+            abort(403);
         }
 
-        $payload = $request->all();
-
-        if ($payload['decision'] === 'ACCEPT') {
-            event(new TransactionApproved($payload));
+        if ($request->decision === 'ACCEPT') {
+            event(new CybersourceHostedCheckoutApproved($request->all()));
         } else {
-            event(new TransactionDeclined($payload));
+            event(new CybersourceHostedCheckoutDeclined($request->all()));
         }
 
-        return response('Response received.');
+        return redirect(config('cybersource.redirect_url'));
     }
 
     public function handleNotification(Request $request)
     {
-        if (!Cybersource::verifySignature($request->all())) {
-            Log::error('Cybersource notification signature verification failed.', $request->all());
-            return response('Invalid signature.', 400);
+        if (!Cybersource::validateSignature($request->all())) {
+            abort(403);
         }
 
-        event(new NotificationReceived($request->all()));
+        event(new CybersourceHostedCheckoutNotificationReceived($request->all()));
 
-        return response('Notification received.');
+        return response()->json(['status' => 'ok']);
     }
 } 
