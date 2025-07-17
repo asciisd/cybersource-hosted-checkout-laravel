@@ -20,12 +20,24 @@ class CybersourceServiceProvider extends ServiceProvider
             __DIR__.'/../resources/js' => resource_path('js/vendor/asciisd/cybersource'),
         ], 'cybersource-assets');
 
+        $this->publishes([
+            __DIR__.'/../resources/views' => resource_path('views/vendor/cybersource'),
+        ], 'cybersource-views');
+
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'cybersource');
 
         Blade::component('cybersource::components.checkout', 'cybersource-checkout');
         Blade::component('cybersource::components.checkout-vue', 'cybersource-checkout-vue');
+
+        // Register commands
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \Asciisd\Cybersource\Console\TestNotificationCommand::class,
+                \Asciisd\Cybersource\Console\TestEventListenerCommand::class,
+            ]);
+        }
     }
 
     /**
