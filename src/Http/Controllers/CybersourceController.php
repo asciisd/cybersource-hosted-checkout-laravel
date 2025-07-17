@@ -22,8 +22,6 @@ class CybersourceController
             event(new CybersourceHostedCheckoutDeclined($request->all()));
         }
 
-        logger()->info('Cybersource handleResponse', $request->all());
-
         return redirect(config('cybersource.redirect_url'));
     }
 
@@ -31,7 +29,11 @@ class CybersourceController
     {
         // Log the incoming request for debugging
         logger()->info('Cybersource notification received', [
-            'payload' => $request->all(),
+            'transaction_id' => $request->input('transaction_id'),
+            'reference_number' => $request->input('reference_number'),
+            'decision' => $request->input('decision'),
+            'signed_field_names' => $request->input('signed_field_names'),
+            'signature' => $request->input('signature'),
             'headers' => $request->headers->all(),
         ]);
 
