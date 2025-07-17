@@ -30,7 +30,7 @@ class CybersourceController
         // Log the incoming request for debugging
         logger()->info('Cybersource notification received', [
             'transaction_id' => $request->input('transaction_id'),
-            'reference_number' => $request->input('reference_number'),
+            'reference_number' => $request->input('req_reference_number'),
             'decision' => $request->input('decision'),
             'signed_field_names' => $request->input('signed_field_names'),
             'signature' => $request->input('signature'),
