@@ -12,6 +12,7 @@ class CybersourceController
 {
     public function handleResponse(Request $request)
     {
+        logger()->info('Cybersource handleResponse', $request->all());
         if (! Cybersource::verifySignature($request->all())) {
             abort(403);
         }
@@ -27,6 +28,7 @@ class CybersourceController
 
     public function handleNotification(Request $request)
     {
+        logger()->info('Cybersource handleNotification', $request->all());
         if (! Cybersource::verifySignature($request->all())) {
             abort(403);
         }
