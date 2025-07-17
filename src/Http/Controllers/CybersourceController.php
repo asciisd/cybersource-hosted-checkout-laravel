@@ -12,7 +12,6 @@ class CybersourceController
 {
     public function handleResponse(Request $request)
     {
-        logger()->info('Cybersource handleResponse', $request->all());
         if (! Cybersource::verifySignature($request->all())) {
             abort(403);
         }
@@ -23,17 +22,28 @@ class CybersourceController
             event(new CybersourceHostedCheckoutDeclined($request->all()));
         }
 
+        logger()->info('Cybersource handleResponse', $request->all());
+
         return redirect(config('cybersource.redirect_url'));
     }
 
     public function handleNotification(Request $request)
     {
-        logger()->info('Cybersource handleNotification', $request->all());
         if (! Cybersource::verifySignature($request->all())) {
             abort(403);
         }
 
+        // Always fire the notification received event
         event(new CybersourceHostedCheckoutNotificationReceived($request->all()));
+
+        // Check the decision and fire appropriate events
+        if ($request->decision === 'ACCEPT') {
+            event(new CybersourceHostedCheckoutApproved($request->all()));
+        } else {
+            event(new CybersourceHostedCheckoutDeclined($request->all()));
+        }
+
+        logger()->info('Cybersource handleNotification', $request->all());
 
         return response()->json(['status' => 'ok']);
     }
