@@ -2,8 +2,8 @@
 
 namespace Asciisd\Cybersource\Events;
 
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class CybersourceHostedCheckoutApproved
 {
@@ -15,4 +15,4 @@ class CybersourceHostedCheckoutApproved
     {
         $this->data = $data;
     }
-} 
+}

@@ -1,12 +1,6 @@
 <template>
   <form :action="endpoint" method="POST">
-    <input
-      v-for="(value, name) in signedFields"
-      :key="name"
-      type="hidden"
-      :name="name"
-      :value="value"
-    />
+    <input v-for="(value, name) in signedFields" :key="name" type="hidden" :name="name" :value="value" />
     <slot>
       <button type="submit">Pay with Cybersource</button>
     </slot>
@@ -26,4 +20,4 @@ const props = defineProps({
     required: true,
   },
 });
-</script> 
+</script>

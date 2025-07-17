@@ -4,7 +4,6 @@ namespace Asciisd\Cybersource\Tests\Feature;
 
 use Asciisd\Cybersource\Facades\Cybersource;
 use Asciisd\Cybersource\Tests\TestCase;
-use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
 class CybersourceTest extends TestCase
 {
@@ -22,4 +21,4 @@ class CybersourceTest extends TestCase
 
         $this->assertTrue(Cybersource::verifySignature($signedFields));
     }
-} 
+}

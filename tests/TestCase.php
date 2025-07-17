@@ -20,4 +20,4 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('cybersource.profile_id', 'test_profile_id');
         $app['config']->set('cybersource.secret_key', 'test_secret_key');
     }
-} 
+}

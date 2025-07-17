@@ -10,4 +10,4 @@ class Cybersource extends Facade
     {
         return 'cybersource';
     }
-} 
+}

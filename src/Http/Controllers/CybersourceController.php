@@ -2,17 +2,17 @@
 
 namespace Asciisd\Cybersource\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Asciisd\Cybersource\Facades\Cybersource;
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutApproved;
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutDeclined;
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutNotificationReceived;
+use Asciisd\Cybersource\Facades\Cybersource;
+use Illuminate\Http\Request;
 
 class CybersourceController
 {
     public function handleResponse(Request $request)
     {
-        if (!Cybersource::validateSignature($request->all())) {
+        if (! Cybersource::validateSignature($request->all())) {
             abort(403);
         }
 
@@ -27,7 +27,7 @@ class CybersourceController
 
     public function handleNotification(Request $request)
     {
-        if (!Cybersource::validateSignature($request->all())) {
+        if (! Cybersource::validateSignature($request->all())) {
             abort(403);
         }
 
@@ -35,4 +35,4 @@ class CybersourceController
 
         return response()->json(['status' => 'ok']);
     }
-} 
+}

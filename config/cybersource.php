@@ -8,4 +8,4 @@ return [
 
     'response_url' => env('CYBERSOURCE_RESPONSE_URL', '/cybersource/response'),
     'notification_url' => env('CYBERSOURCE_NOTIFICATION_URL', '/cybersource/notification'),
-]; 
+];
