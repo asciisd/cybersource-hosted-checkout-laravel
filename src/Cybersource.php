@@ -55,7 +55,9 @@ class Cybersource
     private function buildDataToSign($params)
     {
         $signedFieldNames = explode(',', $params['signed_field_names']);
+        sort($signedFieldNames);
 
+        $dataToSign = [];
         foreach ($signedFieldNames as $field) {
             $dataToSign[] = $field.'='.$params[$field];
         }
