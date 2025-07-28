@@ -6,7 +6,6 @@ class Cybersource
 {
     public function generateSignedFields(array $params): array
     {
-        // $params['partner_solution_id'] = 'IGT4AWTG';
         $params['access_key'] = config('cybersource.access_key');
         $params['profile_id'] = config('cybersource.profile_id');
         $params['unsigned_field_names'] = $params['unsigned_field_names'] ?? '';
@@ -14,13 +13,19 @@ class Cybersource
         $params['locale'] = $params['locale'] ?? 'en';
         $params['transaction_type'] = $params['transaction_type'] ?? 'authorization';
 
-        $params['signed_field_names'] = $params['signed_field_names'] ?? 'access_key,profile_id,transaction_uuid,signed_field_names,unsigned_field_names,signed_date_time,locale,transaction_type,reference_number,amount,currency,payment_method,bill_to_address_line1,bill_to_address_city,bill_to_address_country,bill_to_email,bill_to_surname,bill_to_forename';
+        $params['signed_field_names'] = $this->generateSignedFieldsArray($params);
 
         $signature = $this->sign($params);
 
         $params['signature'] = $signature;
 
         return $params;
+    }
+
+    // add a method to generate the signed_field_names string seperated with commas
+    public function generateSignedFieldsArray(array $data): string
+    {
+        return implode(',', array_keys($data)).',signed_field_names';
     }
 
     /*
