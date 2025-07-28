@@ -20,6 +20,7 @@ class TestNotificationCommand extends Command
             'success' => 'Success notification (ACCEPT)',
             'error' => 'Error notification (ERROR)',
             'declined' => 'Declined notification (DECLINE)',
+            'cancelled' => 'Cancelled notification (CANCEL)',
         ], 'success');
 
         switch ($testType) {
@@ -31,6 +32,9 @@ class TestNotificationCommand extends Command
                 break;
             case 'declined':
                 $this->testDeclinedNotification();
+                break;
+            case 'cancelled':
+                $this->testCancelledNotification();
                 break;
         }
     }
@@ -137,6 +141,46 @@ class TestNotificationCommand extends Command
         ];
 
         $this->processTestNotification($sampleData, 'DECLINED');
+    }
+
+    private function testCancelledNotification()
+    {
+        $this->info('Testing CANCELLED notification...');
+
+        // Sample CANCELLED notification data (based on your logs)
+        $sampleData = [
+            'req_card_number' => 'xxxx-xxxx-xxxx-1111',
+            'req_locale' => 'en',
+            'req_payer_authentication_indicator' => '1',
+            'req_card_type_selection_indicator' => '1',
+            'req_bill_to_surname' => 'Test',
+            'req_bill_to_address_city' => 'Test City',
+            'req_card_expiry_date' => '12-2025',
+            'card_type_name' => 'Visa',
+            'req_bill_to_forename' => 'Test',
+            'req_payer_authentication_acs_window_size' => '01',
+            'req_payment_method' => 'card',
+            'req_device_fingerprint_id' => 'test-fingerprint',
+            'req_payer_authentication_merchant_name' => 'Test Merchant',
+            'req_amount' => '100.00',
+            'req_bill_to_email' => 'test@example.com',
+            'req_currency' => 'USD',
+            'req_card_type' => '001',
+            'decision' => 'CANCEL',
+            'message' => 'The payment was cancelled by the user.',
+            'req_transaction_uuid' => 'test-uuid-' . uniqid(),
+            'req_bill_to_address_country' => 'US',
+            'req_transaction_type' => 'authorization',
+            'req_access_key' => config('cybersource.access_key'),
+            'req_profile_id' => config('cybersource.profile_id'),
+            'req_reference_number' => '01k19gw4z2kx49vb0ccfr66r8t',
+            'req_bill_to_address_line1' => '123 Test St',
+            'signed_field_names' => 'req_card_number,req_locale,req_payer_authentication_indicator,req_card_type_selection_indicator,req_bill_to_surname,req_bill_to_address_city,req_card_expiry_date,card_type_name,req_bill_to_forename,req_payer_authentication_acs_window_size,req_payment_method,req_device_fingerprint_id,req_payer_authentication_merchant_name,req_amount,req_bill_to_email,req_currency,req_card_type,decision,message,req_transaction_uuid,req_bill_to_address_country,req_transaction_type,req_access_key,req_profile_id,req_reference_number,req_bill_to_address_line1,signed_field_names,signed_date_time',
+            'signed_date_time' => gmdate("Y-m-d\TH:i:s\Z"),
+            // Note: transaction_id is intentionally omitted as it's null/missing in CANCEL responses
+        ];
+
+        $this->processTestNotification($sampleData, 'CANCELLED');
     }
 
     private function processTestNotification(array $sampleData, string $type)

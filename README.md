@@ -83,17 +83,18 @@ Now you can use the `<x-cybersource-checkout-vue>` component within your Blade v
 
 ### Handling the Response
 
-When a payment is completed, Cybersource will redirect the user back to your application. This package provides a route and controller to handle this response. The package will automatically verify the signature and fire one of three events:
+When a payment is completed, Cybersource will redirect the user back to your application. This package provides a route and controller to handle this response. The package will automatically verify the signature and fire one of four events:
 
 - `Asciisd\Cybersource\Events\CybersourceHostedCheckoutApproved` - For successful payments (ACCEPT)
 - `Asciisd\Cybersource\Events\CybersourceHostedCheckoutDeclined` - For declined payments (DECLINE)
 - `Asciisd\Cybersource\Events\CybersourceHostedCheckoutError` - For error responses (ERROR)
+- `Asciisd\Cybersource\Events\CybersourceHostedCheckoutCancelled` - For cancelled payments (CANCEL)
 
 You can create listeners for these events to handle the payment outcome, such as updating an order's status in your database.
 
-### Important: Handling ERROR Responses
+### Important: Handling ERROR and CANCEL Responses
 
-When Cybersource returns an ERROR decision, the `transaction_id` field may be `null` or missing from the response. Always check for its existence in your event listeners:
+When Cybersource returns an ERROR or CANCEL decision, the `transaction_id` field may be `null` or missing from the response. Always check for its existence in your event listeners:
 
 ```php
 // ❌ This will cause an error for ERROR decisions
@@ -102,11 +103,13 @@ $transactionId = $event->data['transaction_id'];
 // ✅ Safe way to access transaction_id
 $transactionId = $event->data['transaction_id'] ?? null;
 
-// ✅ Or use the helper method (for CybersourceHostedCheckoutError events)
+// ✅ Or use the helper methods (for CybersourceHostedCheckoutError and CybersourceHostedCheckoutCancelled events)
 $transactionId = $event->getTransactionId();
 
 // ✅ Always available: reference number
 $referenceNumber = $event->data['req_reference_number'] ?? null;
+// Or use the helper method
+$referenceNumber = $event->getReferenceNumber();
 ```
 
 ### Handling Notifications (Webhooks)

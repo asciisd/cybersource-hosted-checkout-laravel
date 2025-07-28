@@ -3,6 +3,7 @@
 namespace Asciisd\Cybersource\Console;
 
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutApproved;
+use Asciisd\Cybersource\Events\CybersourceHostedCheckoutCancelled;
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutDeclined;
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutError;
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutNotificationReceived;
@@ -43,6 +44,14 @@ class TestEventListenerCommand extends Command
             $this->info('Transaction ID: '.($event->data['transaction_id'] ?? 'N/A (common for ERROR decisions)'));
             $this->info('Reference Number: '.($event->data['req_reference_number'] ?? 'N/A'));
             $this->info('Reason Code: '.($event->data['reason_code'] ?? 'N/A'));
+            $this->info('Message: '.($event->data['message'] ?? 'N/A'));
+        });
+
+        Event::listen(CybersourceHostedCheckoutCancelled::class, function ($event) {
+            $this->info('🚫 CybersourceHostedCheckoutCancelled event fired!');
+            $this->info('Transaction ID: '.($event->data['transaction_id'] ?? 'N/A (common for CANCEL decisions)'));
+            $this->info('Reference Number: '.($event->data['req_reference_number'] ?? 'N/A'));
+            $this->info('Transaction UUID: '.($event->data['req_transaction_uuid'] ?? 'N/A'));
             $this->info('Message: '.($event->data['message'] ?? 'N/A'));
         });
 
