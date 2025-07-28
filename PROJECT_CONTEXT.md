@@ -53,11 +53,12 @@ This file contains the configuration for the package. It requires credentials fo
 
 The package dispatches the following events:
 
-- **`CybersourceHostedCheckoutApproved`**: Fired when a payment is successful.
-- **`CybersourceHostedCheckoutDeclined`**: Fired when a payment is declined.
+- **`CybersourceHostedCheckoutApproved`**: Fired when a payment is successful (ACCEPT).
+- **`CybersourceHostedCheckoutDeclined`**: Fired when a payment is declined (DECLINE).
+- **`CybersourceHostedCheckoutError`**: Fired when there's an error with the payment (ERROR). Note: `transaction_id` may be null/missing for ERROR responses.
 - **`CybersourceHostedCheckoutNotificationReceived`**: Fired for any valid notification received from Cybersource.
 
-All events receive the full payload from the Cybersource request as a constructor argument.
+All events receive the full payload from the Cybersource request as a constructor argument. The `CybersourceHostedCheckoutError` event provides helper methods to safely access potentially missing fields.
 
 ### `resources/`
 

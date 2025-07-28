@@ -4,6 +4,7 @@ namespace Asciisd\Cybersource\Console;
 
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutApproved;
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutDeclined;
+use Asciisd\Cybersource\Events\CybersourceHostedCheckoutError;
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutNotificationReceived;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Event;
@@ -35,6 +36,14 @@ class TestEventListenerCommand extends Command
             $this->info('❌ CybersourceHostedCheckoutDeclined event fired!');
             $this->info('Transaction ID: '.($event->data['transaction_id'] ?? 'N/A'));
             $this->info('Decision: '.($event->data['decision'] ?? 'N/A'));
+        });
+
+        Event::listen(CybersourceHostedCheckoutError::class, function ($event) {
+            $this->info('⚠️  CybersourceHostedCheckoutError event fired!');
+            $this->info('Transaction ID: '.($event->data['transaction_id'] ?? 'N/A (common for ERROR decisions)'));
+            $this->info('Reference Number: '.($event->data['req_reference_number'] ?? 'N/A'));
+            $this->info('Reason Code: '.($event->data['reason_code'] ?? 'N/A'));
+            $this->info('Message: '.($event->data['message'] ?? 'N/A'));
         });
 
         $this->info('Event listeners registered. Now run the test notification command:');

@@ -4,6 +4,7 @@ namespace Asciisd\Cybersource\Http\Controllers;
 
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutApproved;
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutDeclined;
+use Asciisd\Cybersource\Events\CybersourceHostedCheckoutError;
 use Asciisd\Cybersource\Events\CybersourceHostedCheckoutNotificationReceived;
 use Asciisd\Cybersource\Facades\Cybersource;
 use Illuminate\Http\Request;
@@ -18,6 +19,8 @@ class CybersourceController
 
         if ($request->decision === 'ACCEPT') {
             event(new CybersourceHostedCheckoutApproved($request->all()));
+        } elseif ($request->decision === 'ERROR') {
+            event(new CybersourceHostedCheckoutError($request->all()));
         } else {
             event(new CybersourceHostedCheckoutDeclined($request->all()));
         }
@@ -58,6 +61,13 @@ class CybersourceController
         if ($request->decision === 'ACCEPT') {
             logger()->info('Firing CybersourceHostedCheckoutApproved event for ACCEPT decision');
             event(new CybersourceHostedCheckoutApproved($request->all()));
+        } elseif ($request->decision === 'ERROR') {
+            logger()->info('Firing CybersourceHostedCheckoutError event for ERROR decision', [
+                'decision' => $request->decision,
+                'reason_code' => $request->input('reason_code'),
+                'message' => $request->input('message'),
+            ]);
+            event(new CybersourceHostedCheckoutError($request->all()));
         } else {
             logger()->info('Firing CybersourceHostedCheckoutDeclined event for non-ACCEPT decision', [
                 'decision' => $request->decision,
