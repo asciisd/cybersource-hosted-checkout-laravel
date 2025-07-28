@@ -13,6 +13,9 @@ class Cybersource
         $params['locale'] = $params['locale'] ?? 'en';
         $params['transaction_type'] = $params['transaction_type'] ?? 'authorization';
 
+        // Trim all fields before generating the signed_field_names
+        $params = array_map('trim', $params);
+
         $params['signed_field_names'] = $this->generateSignedFieldsArray($params);
 
         $signature = $this->sign($params);
