@@ -14,8 +14,33 @@ This is the main class of the package. It handles the core logic:
 
 - **`generateSignedFields(array $params)`**: Creates the necessary parameters and signature for the hosted checkout payment form. It takes an array of parameters, adds required fields like `access_key`, `profile_id`, and `signed_date_time`, and generates a `signature`.
 - **`verifySignature(array $payload)`**: Verifies the signature of incoming data from Cybersource (from both the response and notification) to ensure its integrity.
-- **`retrieve($transactionId)`**: A method to retrieve payment details from the Cybersource API using the transaction ID. It uses Guzzle to make the API call and includes methods to generate the necessary authentication headers.
-- **`searchTransactions(array $searchParams)`**: A method to search for transactions using the Cybersource Transaction Search API. It accepts search parameters including query, name, timezone, offset, limit, and sort options. Returns paginated results with transaction summaries.
+- **`retrieve($transactionId)`**: A method to retrieve payment details from the Cybersource API using the transaction ID. It uses Laravel's HTTP client to make the API call and includes methods to generate the necessary authentication headers.
+- **`searchTransactions(array $searchParams)`**: A method to search for transactions using the Cybersource Transaction Search API. It accepts search parameters including query, name, timezone, offset, limit, and sort options. Returns a `TransactionSearchResponse` object with paginated results and transaction summaries. Uses proper v-c-date headers for authentication and defaults to limit=20, sort=submitTimeUtc:desc.
+
+### Response Classes
+
+The package includes dedicated response classes for better type safety and developer experience:
+
+#### `src/Responses/TransactionSearchResponse.php`
+
+This class wraps the search API response and provides:
+
+- **Properties**: Direct access to search metadata (searchId, totalCount, count, limit, offset, etc.)
+- **`getTransactions()`**: Returns a Laravel Collection of `TransactionSummary` objects
+- **Pagination helpers**: `hasMoreResults()`, `getNextOffset()`, `isFirstPage()`, `isLastPage()`, `getPaginationInfo()`
+- **`getSelfLink()`**: Get the API URL for this search result
+- **`toArray()`**: Convert to array for JSON serialization
+
+#### `src/Responses/TransactionSummary.php`
+
+This class represents individual transaction data with:
+
+- **Properties**: Direct access to all transaction fields (id, merchantId, submitTimeUtc, etc.)
+- **Status helpers**: `getStatus()`, `isApproved()`, `isDeclined()` with reason code mapping
+- **Data extractors**: `getTotalAmount()`, `getCurrency()`, `getPaymentMethod()`, `getMaskedCardNumber()`
+- **Customer info**: `getCustomerEmail()`, `getClientReferenceCode()`
+- **Links**: `getTransactionDetailLink()` for detailed transaction information
+- **`toArray()`**: Convert to array with computed fields
 
 ### `src/CybersourceServiceProvider.php`
 
