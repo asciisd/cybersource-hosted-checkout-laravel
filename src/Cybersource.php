@@ -109,6 +109,45 @@ class Cybersource
         }
     }
 
+    public function searchTransactions(array $searchParams)
+    {
+        $merchantConfig = [
+            'merchantID' => config('cybersource.merchant_id'),
+            'apiKeyID' => config('cybersource.api_key'),
+            'secretKey' => config('cybersource.api_secret_key'),
+            'host' => config('cybersource.api_host'),
+        ];
+
+        // Set default values for required parameters
+        $defaultParams = [
+            'save' => false,
+            'name' => 'Transaction Search',
+            'timezone' => 'UTC',
+            'offset' => 0,
+            'limit' => 100,
+            'sort' => 'id:asc,submitTimeUtc:asc',
+        ];
+
+        $searchParams = array_merge($defaultParams, $searchParams);
+
+        $requestUrl = 'https://'.$merchantConfig['host'].'/tss/v2/searches';
+        $payload = json_encode($searchParams);
+
+        $client = new \GuzzleHttp\Client;
+
+        try {
+            $response = $client->post($requestUrl, [
+                'headers' => $this->generateCyberSourceHeaders('POST', '/tss/v2/searches', $payload, $merchantConfig),
+                'body' => $payload,
+            ]);
+
+            return json_decode($response->getBody()->getContents(), true);
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            // Handle exception
+            return json_decode($e->getResponse()->getBody()->getContents(), true);
+        }
+    }
+
     private function generateCyberSourceHeaders($method, $resourcePath, $payload, $merchantConfig)
     {
         $date = gmdate('D, d M Y H:i:s \G\M\T');

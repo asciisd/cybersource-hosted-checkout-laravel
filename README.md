@@ -62,14 +62,14 @@ This command will place the Vue component into your `resources/js/vendor/asciisd
 Next, register the component in your main `resources/js/app.js` file:
 
 ```javascript
-import { createApp } from 'vue';
-import CyberSourceCheckout from './vendor/asciisd/cybersource/js/components/CyberSourceCheckout.vue';
+import { createApp } from "vue";
+import CyberSourceCheckout from "./vendor/asciisd/cybersource/js/components/CyberSourceCheckout.vue";
 
 const app = createApp({});
 
-app.component('CyberSourceCheckout', CyberSourceCheckout);
+app.component("CyberSourceCheckout", CyberSourceCheckout);
 
-app.mount('#app');
+app.mount("#app");
 ```
 
 Now you can use the `<x-cybersource-checkout-vue>` component within your Blade views. It accepts the same properties as the standard Blade component.
@@ -80,6 +80,51 @@ Now you can use the `<x-cybersource-checkout-vue>` component within your Blade v
     currency="USD"
 />
 ```
+
+### Searching Transactions
+
+This package provides a method to search for transactions using the Cybersource Transaction Search API. You can search for transactions based on various criteria:
+
+```php
+use Asciisd\Cybersource\Facades\Cybersource;
+
+// Basic search by client reference code
+$searchParams = [
+    'query' => 'clientReferenceInformation.code:your_order_id',
+];
+
+$result = Cybersource::searchTransactions($searchParams);
+
+// Advanced search with multiple parameters
+$searchParams = [
+    'query' => 'clientReferenceInformation.code:your_order_id AND submitTimeUtc:[2024-01-01T00:00:00Z TO 2024-12-31T23:59:59Z]',
+    'name' => 'Order Search',
+    'timezone' => 'America/Chicago',
+    'offset' => 0,
+    'limit' => 50,
+    'sort' => 'submitTimeUtc:desc'
+];
+
+$result = Cybersource::searchTransactions($searchParams);
+```
+
+The search method returns a response containing:
+
+- `searchId`: Unique identifier for the search
+- `count`: Number of transactions found in current page
+- `totalCount`: Total number of transactions matching the query
+- `_embedded.transactionSummaries`: Array of transaction summaries
+
+**Available Query Parameters:**
+
+- `query` (required): The search query using Cybersource query syntax
+- `name`: A descriptive name for the search (default: "Transaction Search")
+- `timezone`: Timezone for date/time fields (default: "UTC")
+- `offset`: Number of records to skip (default: 0)
+- `limit`: Maximum number of records to return (default: 100, max: 2500)
+- `sort`: Sort order (default: "id:asc,submitTimeUtc:asc")
+
+For more information about query syntax, see the [Cybersource Transaction Search API documentation](https://developer.cybersource.com/api-reference-assets/index.html#transaction-search_search-transactions_create-a-search-request_responsefielddescription_201).
 
 ### Handling the Response
 
@@ -126,4 +171,4 @@ php artisan vendor:publish --provider="Asciisd\Cybersource\CybersourceServicePro
 
 ## Testing
 
-This package is configured to use the Cybersource sandbox environment by default. You can change this by updating the `CYBERSOURCE_ENDPOINT` value in your `.env` file. 
+This package is configured to use the Cybersource sandbox environment by default. You can change this by updating the `CYBERSOURCE_ENDPOINT` value in your `.env` file.

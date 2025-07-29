@@ -15,6 +15,7 @@ This is the main class of the package. It handles the core logic:
 - **`generateSignedFields(array $params)`**: Creates the necessary parameters and signature for the hosted checkout payment form. It takes an array of parameters, adds required fields like `access_key`, `profile_id`, and `signed_date_time`, and generates a `signature`.
 - **`verifySignature(array $payload)`**: Verifies the signature of incoming data from Cybersource (from both the response and notification) to ensure its integrity.
 - **`retrieve($transactionId)`**: A method to retrieve payment details from the Cybersource API using the transaction ID. It uses Guzzle to make the API call and includes methods to generate the necessary authentication headers.
+- **`searchTransactions(array $searchParams)`**: A method to search for transactions using the Cybersource Transaction Search API. It accepts search parameters including query, name, timezone, offset, limit, and sort options. Returns paginated results with transaction summaries.
 
 ### `src/CybersourceServiceProvider.php`
 
